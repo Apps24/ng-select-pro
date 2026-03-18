@@ -1,9 +1,9 @@
 # ng-select-pro
 
-[![npm version](https://img.shields.io/npm/v/ng-select-pro.svg)](https://www.npmjs.com/package/ng-select-pro)
+[![npm version](https://img.shields.io/npm/v/@apps24/ng-select-pro.svg)](https://www.npmjs.com/package/@apps24/ng-select-pro)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Angular](https://img.shields.io/badge/Angular-8%2B-red.svg)](https://angular.io)
-[![Build Status](https://github.com/your-org/ng-select-pro/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/ng-select-pro/actions)
+[![Build Status](https://github.com/apps24/ng-select-pro/actions/workflows/ci.yml/badge.svg)](https://github.com/apps24/ng-select-pro/actions)
 
 A production-ready Angular multiselect dropdown component with search, virtual scroll, keyboard navigation, group support, and full theming.
 
@@ -35,7 +35,7 @@ A production-ready Angular multiselect dropdown component with search, virtual s
 ## Installation
 
 ```bash
-npm install ng-select-pro @angular/cdk
+npm install @apps24/ng-select-pro @angular/cdk
 ```
 
 ---
@@ -46,7 +46,7 @@ npm install ng-select-pro @angular/cdk
 
 ```typescript
 // app.module.ts
-import { MultiSelectModule } from 'ng-select-pro';
+import { MultiSelectModule } from '@apps24/ng-select-pro';
 
 @NgModule({
   imports: [
@@ -72,7 +72,7 @@ export class AppModule {}
 // main.ts
 import { bootstrapApplication } from '@angular/platform-browser';
 import { importProvidersFrom } from '@angular/core';
-import { MultiSelectModule } from 'ng-select-pro';
+import { MultiSelectModule } from '@apps24/ng-select-pro';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -85,7 +85,7 @@ bootstrapApplication(AppComponent, {
 
 ```typescript
 import { FormControl } from '@angular/forms';
-import { IMultiSelectOption } from 'ng-select-pro';
+import { IMultiSelectOption } from '@apps24/ng-select-pro';
 
 control = new FormControl<IMultiSelectOption[]>([]);
 ```
@@ -169,7 +169,7 @@ All config options are available via `[config]="{ ... }"`:
 ## Global defaults via injection token
 
 ```typescript
-import { MULTI_SELECT_DEFAULT_CONFIG } from 'ng-select-pro';
+import { MULTI_SELECT_DEFAULT_CONFIG } from '@apps24/ng-select-pro';
 
 // In your module or providers array:
 {
@@ -262,7 +262,7 @@ Add `.ng-select-material` class to the host for a Material Design appearance.
 ### Development Setup
 
 ```bash
-git clone https://github.com/your-org/ng-select-pro.git
+git clone https://github.com/apps24/ng-select-pro.git
 cd ng-select-pro
 npm install
 npm run build:lib       # Build the library
@@ -274,4 +274,4 @@ npm test                # Run library tests
 
 ## License
 
-MIT © your-org
+MIT © apps24
