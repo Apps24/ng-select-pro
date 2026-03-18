@@ -1,5 +1,5 @@
 {
-  "name": "@apps24/ng-select-pro",
+  "name": "@apps/ng-select-pro",
   "version": "0.1.0",
   "description": "A production-ready Angular multiselect dropdown component with search, virtual scroll, keyboard navigation, and full theming support.",
   "keywords": [
