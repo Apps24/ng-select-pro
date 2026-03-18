@@ -1,0 +1,29 @@
+# Source
+src/
+projects/
+docs/
+
+# Config
+angular.json
+tsconfig.json
+tsconfig.base.json
+.editorconfig
+.gitignore
+karma.conf.js
+jest.config.js
+
+# CI
+.github/
+
+# Tests
+**/*.spec.ts
+**/*.spec.js
+coverage/
+
+# Node
+node_modules/
+
+# Misc
+*.log
+.DS_Store
+Thumbs.db

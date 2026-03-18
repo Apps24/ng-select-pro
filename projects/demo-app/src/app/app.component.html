@@ -1,0 +1,358 @@
+<div class="demo-app">
+
+  <!-- Header -->
+  <header class="demo-header">
+    <div class="demo-header__content">
+      <div class="demo-header__title-row">
+        <h1 class="demo-header__title">ng-select-pro</h1>
+        <div class="demo-header__badges">
+          <span class="badge badge--blue">v0.1.0</span>
+          <span class="badge badge--green">MIT</span>
+          <span class="badge badge--purple">Angular 8+</span>
+        </div>
+      </div>
+      <p class="demo-header__subtitle">Production-ready Angular multiselect dropdown with search, virtual scroll, keyboard navigation, and full theming.</p>
+    </div>
+  </header>
+
+  <main class="demo-main">
+
+    <!-- ===== DEMO CARDS ===== -->
+    <section class="demo-section">
+      <h2 class="demo-section__title">Component Demos</h2>
+      <div class="demo-grid">
+
+        <!-- Card 1: Basic Multi-Select -->
+        <div class="demo-card">
+          <div class="demo-card__header">
+            <h3 class="demo-card__title">Basic Multi-Select</h3>
+            <span class="demo-card__tag">default</span>
+          </div>
+          <div class="demo-card__body">
+            <ng-multiselect
+              [(ngModel)]="basicSelected"
+              [options]="fruitOptions"
+              (selectionChange)="logEvent('Basic selection: ' + $event.map(o => o.label).join(', '))"
+              (dropdownOpen)="logEvent('Basic dropdown opened')"
+              (dropdownClose)="logEvent('Basic dropdown closed')"
+            ></ng-multiselect>
+            <div class="demo-card__output" *ngIf="basicSelected.length > 0">
+              <strong>Selected:</strong> {{ basicSelected | json }}
+            </div>
+          </div>
+          <div class="demo-card__code">
+            <pre><code>&lt;ng-multiselect [(ngModel)]="selected" [options]="options"&gt;&lt;/ng-multiselect&gt;</code></pre>
+          </div>
+        </div>
+
+        <!-- Card 2: Single Select -->
+        <div class="demo-card">
+          <div class="demo-card__header">
+            <h3 class="demo-card__title">Single Select</h3>
+            <span class="demo-card__tag">mode: single</span>
+          </div>
+          <div class="demo-card__body">
+            <ng-multiselect
+              [(ngModel)]="singleSelected"
+              [options]="fruitOptions"
+              [config]="singleConfig"
+              (selectionChange)="logEvent('Single selection: ' + ($event[0]?.label || 'none'))"
+            ></ng-multiselect>
+            <div class="demo-card__output" *ngIf="singleSelected.length > 0">
+              <strong>Selected:</strong> {{ singleSelected[0].label }}
+            </div>
+          </div>
+          <div class="demo-card__code">
+            <pre><code>[config]="{{ '{' }} mode: 'single', closeOnSelect: true {{ '}' }}"</code></pre>
+          </div>
+        </div>
+
+        <!-- Card 3: With Search & Groups -->
+        <div class="demo-card">
+          <div class="demo-card__header">
+            <h3 class="demo-card__title">With Search &amp; Groups</h3>
+            <span class="demo-card__tag">searchEnabled</span>
+          </div>
+          <div class="demo-card__body">
+            <ng-multiselect
+              [(ngModel)]="searchSelected"
+              [options]="countryOptions"
+              (searchChange)="logEvent('Search: ' + $event)"
+            ></ng-multiselect>
+            <div class="demo-card__output" *ngIf="searchSelected.length > 0">
+              <strong>Selected:</strong> {{ searchSelected.map(o => o.label).join(', ') }}
+            </div>
+          </div>
+          <div class="demo-card__code">
+            <pre><code>// Options with group property
+{{ '{' }} id: 'us', label: 'United States', group: 'Americas' {{ '}' }}</code></pre>
+          </div>
+        </div>
+
+        <!-- Card 4: Max Select (3) -->
+        <div class="demo-card">
+          <div class="demo-card__header">
+            <h3 class="demo-card__title">Max Select (3)</h3>
+            <span class="demo-card__tag">maxSelect: 3</span>
+          </div>
+          <div class="demo-card__body">
+            <ng-multiselect
+              [(ngModel)]="maxSelected"
+              [options]="fruitOptions"
+              [config]="maxConfig"
+              (selectionChange)="logEvent('MaxSelect selection count: ' + $event.length)"
+            ></ng-multiselect>
+            <div class="demo-card__output">
+              <strong>Selected ({{ maxSelected.length }}/3):</strong>
+              {{ maxSelected.map(o => o.label).join(', ') || 'None' }}
+            </div>
+          </div>
+          <div class="demo-card__code">
+            <pre><code>[config]="{{ '{' }} maxSelect: 3 {{ '}' }}"</code></pre>
+          </div>
+        </div>
+
+        <!-- Card 5: Disabled Items + Disabled Component -->
+        <div class="demo-card">
+          <div class="demo-card__header">
+            <h3 class="demo-card__title">Disabled Items</h3>
+            <span class="demo-card__tag">disabled</span>
+          </div>
+          <div class="demo-card__body">
+            <p style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">
+              Node.js and Deno have <code>disabled: true</code>. Component is also disabled.
+            </p>
+            <ng-multiselect
+              [(ngModel)]="disabledSelected"
+              [options]="techStackOptions"
+              [config]="disabledConfig"
+            ></ng-multiselect>
+          </div>
+          <div class="demo-card__code">
+            <pre><code>// Option: {{ '{' }} id: 'node', label: 'Node.js', disabled: true {{ '}' }}
+// Config: {{ '{' }} disabled: true {{ '}' }}</code></pre>
+          </div>
+        </div>
+
+        <!-- Card 6: Virtual Scroll (200 options) -->
+        <div class="demo-card">
+          <div class="demo-card__header">
+            <h3 class="demo-card__title">Virtual Scroll</h3>
+            <span class="demo-card__tag">200 items</span>
+          </div>
+          <div class="demo-card__body">
+            <p style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">
+              Automatically switches to CDK virtual scroll when options exceed 100.
+            </p>
+            <ng-multiselect
+              [(ngModel)]="virtualScrollSelected"
+              [options]="largeOptions"
+              (selectionChange)="logEvent('VirtualScroll: ' + $event.length + ' selected')"
+            ></ng-multiselect>
+            <div class="demo-card__output">
+              <strong>Selected:</strong> {{ virtualScrollSelected.length }} items
+            </div>
+          </div>
+          <div class="demo-card__code">
+            <pre><code>// Auto virtual scroll when options.length > 100
+// Uses CdkVirtualScrollViewport (itemSize=38)</code></pre>
+          </div>
+        </div>
+
+        <!-- Card 7: Tailwind-styled -->
+        <div class="demo-card demo-card--tailwind">
+          <div class="demo-card__header">
+            <h3 class="demo-card__title">Tailwind Theme</h3>
+            <span class="demo-card__tag">custom classes</span>
+          </div>
+          <div class="demo-card__body">
+            <ng-multiselect
+              class="ng-select-tailwind"
+              [(ngModel)]="tailwindSelected"
+              [options]="fruitOptions"
+              [config]="tailwindConfig"
+            ></ng-multiselect>
+          </div>
+          <div class="demo-card__code">
+            <pre><code>class="ng-select-tailwind"
+[config]="{{ '{' }} theme: {{ '{' }} containerClass: 'border rounded-lg ...' {{ '}' }} {{ '}' }}"</code></pre>
+          </div>
+        </div>
+
+        <!-- Card 8: Material-styled -->
+        <div class="demo-card">
+          <div class="demo-card__header">
+            <h3 class="demo-card__title">Material Theme</h3>
+            <span class="demo-card__tag">ng-select-material</span>
+          </div>
+          <div class="demo-card__body">
+            <ng-multiselect
+              class="ng-select-material"
+              [(ngModel)]="materialSelected"
+              [options]="fruitOptions"
+            ></ng-multiselect>
+          </div>
+          <div class="demo-card__code">
+            <pre><code>&lt;ng-multiselect class="ng-select-material" ...&gt;</code></pre>
+          </div>
+        </div>
+
+        <!-- Card 9: Reactive Forms -->
+        <div class="demo-card">
+          <div class="demo-card__header">
+            <h3 class="demo-card__title">Reactive Forms</h3>
+            <span class="demo-card__tag">FormControl</span>
+          </div>
+          <div class="demo-card__body">
+            <ng-multiselect
+              [formControl]="reactiveControl"
+              [options]="fruitOptions"
+            ></ng-multiselect>
+            <div class="demo-card__output">
+              <strong>Control value:</strong>
+              {{ (reactiveControl.value?.length || 0) }} items selected
+            </div>
+            <div style="margin-top: 8px; display: flex; gap: 8px;">
+              <button class="demo-btn" (click)="reactiveControl.reset([])">Reset</button>
+              <button class="demo-btn" (click)="reactiveControl.disable()">Disable</button>
+              <button class="demo-btn" (click)="reactiveControl.enable()">Enable</button>
+            </div>
+          </div>
+          <div class="demo-card__code">
+            <pre><code>control = new FormControl&lt;IMultiSelectOption[]&gt;([]);
+&lt;ng-multiselect [formControl]="control"&gt;&lt;/ng-multiselect&gt;</code></pre>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== PLAYGROUND ===== -->
+    <section class="demo-section">
+      <h2 class="demo-section__title">Live Playground</h2>
+      <div class="playground">
+        <!-- Preview -->
+        <div class="playground__preview">
+          <h3 class="playground__preview-title">Preview</h3>
+          <ng-multiselect
+            [(ngModel)]="playgroundSelected"
+            [options]="playgroundOptions"
+            [config]="playgroundConfig"
+            (selectionChange)="logEvent('Playground: ' + $event.map(o => o.label).join(', '))"
+          ></ng-multiselect>
+          <div class="playground__selection-output" *ngIf="playgroundSelected.length > 0">
+            <strong>Selected:</strong>
+            <span *ngFor="let opt of playgroundSelected" class="playground__selected-tag">{{ opt.label }}</span>
+          </div>
+          <div class="playground__config-json">
+            <h4>Current Config JSON</h4>
+            <pre>{{ playgroundConfigJson }}</pre>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="playground__controls">
+          <h3 class="playground__controls-title">Configuration</h3>
+
+          <div class="pg-field">
+            <label class="pg-label">mode</label>
+            <select class="pg-select" [(ngModel)]="pg_mode" (change)="updatePlaygroundConfig()">
+              <option value="multi">multi</option>
+              <option value="single">single</option>
+            </select>
+          </div>
+
+          <div class="pg-field">
+            <label class="pg-label">searchEnabled</label>
+            <label class="pg-toggle">
+              <input type="checkbox" [(ngModel)]="pg_searchEnabled" (change)="updatePlaygroundConfig()" />
+              <span class="pg-toggle__slider"></span>
+            </label>
+          </div>
+
+          <div class="pg-field">
+            <label class="pg-label">placeholder</label>
+            <input class="pg-input" type="text" [(ngModel)]="pg_placeholder" (input)="updatePlaygroundConfig()" />
+          </div>
+
+          <div class="pg-field">
+            <label class="pg-label">maxSelect <small>(blank = null)</small></label>
+            <input class="pg-input" type="number" min="1" [(ngModel)]="pg_maxSelect" (input)="updatePlaygroundConfig()" placeholder="null" />
+          </div>
+
+          <div class="pg-field">
+            <label class="pg-label">maxDisplayed</label>
+            <input class="pg-input" type="number" min="1" max="10" [(ngModel)]="pg_maxDisplayed" (input)="updatePlaygroundConfig()" />
+          </div>
+
+          <div class="pg-field">
+            <label class="pg-label">disabled</label>
+            <label class="pg-toggle">
+              <input type="checkbox" [(ngModel)]="pg_disabled" (change)="updatePlaygroundConfig()" />
+              <span class="pg-toggle__slider"></span>
+            </label>
+          </div>
+
+          <div class="pg-field">
+            <label class="pg-label">closeOnSelect</label>
+            <label class="pg-toggle">
+              <input type="checkbox" [(ngModel)]="pg_closeOnSelect" (change)="updatePlaygroundConfig()" />
+              <span class="pg-toggle__slider"></span>
+            </label>
+          </div>
+
+          <div class="pg-field">
+            <label class="pg-label">showSelectAll</label>
+            <label class="pg-toggle">
+              <input type="checkbox" [(ngModel)]="pg_showSelectAll" (change)="updatePlaygroundConfig()" />
+              <span class="pg-toggle__slider"></span>
+            </label>
+          </div>
+
+          <div class="pg-field">
+            <label class="pg-label">showClearAll</label>
+            <label class="pg-toggle">
+              <input type="checkbox" [(ngModel)]="pg_showClearAll" (change)="updatePlaygroundConfig()" />
+              <span class="pg-toggle__slider"></span>
+            </label>
+          </div>
+
+          <div class="pg-field">
+            <label class="pg-label">loading</label>
+            <label class="pg-toggle">
+              <input type="checkbox" [(ngModel)]="pg_loading" (change)="updatePlaygroundConfig()" />
+              <span class="pg-toggle__slider"></span>
+            </label>
+          </div>
+
+          <div class="pg-field">
+            <label class="pg-label">dropdownPosition</label>
+            <select class="pg-select" [(ngModel)]="pg_dropdownPosition" (change)="updatePlaygroundConfig()">
+              <option value="auto">auto</option>
+              <option value="bottom">bottom</option>
+              <option value="top">top</option>
+            </select>
+          </div>
+
+          <div class="pg-field">
+            <label class="pg-label">noResultsText</label>
+            <input class="pg-input" type="text" [(ngModel)]="pg_noResultsText" (input)="updatePlaygroundConfig()" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== EVENT LOG ===== -->
+    <section class="demo-section" *ngIf="eventLog.length > 0">
+      <h2 class="demo-section__title">Event Log</h2>
+      <div class="event-log">
+        <div class="event-log__entry" *ngFor="let entry of eventLog">{{ entry }}</div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="demo-footer">
+    <p>ng-select-pro &bull; MIT License &bull; <a href="https://github.com/your-org/ng-select-pro" target="_blank">GitHub</a></p>
+  </footer>
+</div>

@@ -1,0 +1,225 @@
+<div
+  class="ng-select-container"
+  [class]="mergedConfig.theme.containerClass"
+  [class.ng-select--open]="isOpen"
+  [class.ng-select--disabled]="isDisabled"
+  [class.ng-select--top]="isOpen && computedDropdownPosition === 'top'"
+  role="combobox"
+  [attr.aria-expanded]="isOpen"
+  [attr.aria-haspopup]="'listbox'"
+  [attr.aria-disabled]="isDisabled"
+  [attr.aria-label]="mergedConfig.placeholder"
+  (click)="toggleDropdown()"
+  tabindex="0"
+>
+  <!-- Selection display area -->
+  <div class="ng-select-selection">
+    <!-- Loading state -->
+    <ng-container *ngIf="mergedConfig.loading; else selectionContent">
+      <span class="ng-select-loading-text">{{ mergedConfig.loadingText }}</span>
+      <span class="ng-select-spinner" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="31.416" stroke-dashoffset="10">
+            <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+      </span>
+    </ng-container>
+
+    <ng-template #selectionContent>
+      <!-- Placeholder -->
+      <ng-container *ngIf="selectedOptions.length === 0">
+        <span class="ng-select-placeholder">{{ mergedConfig.placeholder }}</span>
+      </ng-container>
+
+      <!-- Selected badges -->
+      <ng-container *ngIf="selectedOptions.length > 0">
+        <span
+          *ngFor="let opt of displayedBadges; trackBy: trackByOption"
+          class="ng-select-badge"
+          [class]="mergedConfig.theme.badgeClass"
+          [attr.title]="opt.tooltip || opt.label"
+        >
+          <span class="ng-select-badge__label">{{ opt.label }}</span>
+          <button
+            *ngIf="!isDisabled"
+            class="ng-select-badge__remove"
+            type="button"
+            [attr.aria-label]="'Remove ' + opt.label"
+            (click)="removeOption(opt, $event)"
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </span>
+
+        <!-- Overflow badge -->
+        <span
+          *ngIf="overflowCount > 0"
+          class="ng-select-badge ng-select-badge--overflow"
+          [class]="mergedConfig.theme.overflowBadgeClass"
+          [attr.title]="'+' + overflowCount + ' more selected'"
+        >
+          +{{ overflowCount }}
+        </span>
+      </ng-container>
+    </ng-template>
+  </div>
+
+  <!-- Controls area -->
+  <div class="ng-select-controls" (click)="$event.stopPropagation()">
+    <!-- Clear all button -->
+    <button
+      *ngIf="selectedOptions.length > 0 && mergedConfig.showClearAll && !isDisabled"
+      class="ng-select-clear-btn"
+      [class]="mergedConfig.theme.clearBtnClass"
+      type="button"
+      aria-label="Clear all selections"
+      (click)="clearAll($event)"
+    >
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <!-- Caret -->
+    <span class="ng-select-caret" aria-hidden="true" (click)="toggleDropdown()">
+      <svg
+        class="ng-select-caret__icon"
+        [class.ng-select-caret__icon--open]="isOpen"
+        width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </div>
+</div>
+
+<!-- Dropdown panel -->
+<div
+  *ngIf="isOpen"
+  class="ng-select-dropdown"
+  [class]="mergedConfig.theme.dropdownClass"
+  [class.ng-select-dropdown--top]="computedDropdownPosition === 'top'"
+  [@dropdownAnimation]="dropdownAnimationState"
+  role="listbox"
+  [attr.aria-multiselectable]="mergedConfig.mode === 'multi'"
+  #dropdownContainer
+>
+  <!-- Search input -->
+  <div class="ng-select-search-wrapper" *ngIf="mergedConfig.searchEnabled">
+    <input
+      #searchInput
+      class="ng-select-search"
+      [class]="mergedConfig.theme.searchClass"
+      type="text"
+      [placeholder]="mergedConfig.searchPlaceholder"
+      [value]="searchQuery"
+      (input)="onSearchInput($event)"
+      (click)="$event.stopPropagation()"
+      aria-label="Search options"
+      autocomplete="off"
+    />
+    <span class="ng-select-search__icon" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M10 10L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </span>
+  </div>
+
+  <!-- Select All / Deselect All -->
+  <div
+    class="ng-select-select-all"
+    [class]="mergedConfig.theme.selectAllClass"
+    *ngIf="mergedConfig.showSelectAll && mergedConfig.mode === 'multi' && filteredOptions.length > 0"
+    (click)="$event.stopPropagation()"
+  >
+    <button
+      type="button"
+      class="ng-select-select-all__btn"
+      (click)="toggleSelectAll()"
+    >
+      <span class="ng-select-checkbox" [class.ng-select-checkbox--checked]="allSelected" aria-hidden="true">
+        <svg *ngIf="allSelected" width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      {{ allSelected ? 'Deselect all' : 'Select all' }}
+    </button>
+  </div>
+
+  <!-- Option list: virtual scroll for large lists -->
+  <ng-container *ngIf="useVirtualScroll; else normalList">
+    <cdk-virtual-scroll-viewport itemSize="38" class="ng-select-virtual-viewport">
+      <ng-container *cdkVirtualFor="let option of filteredOptions; trackBy: trackByOption">
+        <div
+          class="ng-select-option"
+          [class.ng-select-option--selected]="isSelected(option)"
+          [class.ng-select-option--disabled]="option.disabled"
+          [class.ng-select-option--focused]="filteredOptions.indexOf(option) === focusedIndex"
+          [ngClass]="isSelected(option) ? [mergedConfig.theme.itemClass, mergedConfig.theme.selectedItemClass] : [mergedConfig.theme.itemClass]"
+          [attr.role]="'option'"
+          [attr.aria-selected]="isSelected(option)"
+          [attr.aria-disabled]="option.disabled || false"
+          [attr.title]="option.tooltip || ''"
+          (click)="selectOption(option, $event)"
+        >
+          <span *ngIf="mergedConfig.mode === 'multi'" class="ng-select-checkbox" [class.ng-select-checkbox--checked]="isSelected(option)" aria-hidden="true">
+            <svg *ngIf="isSelected(option)" width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span *ngIf="mergedConfig.mode === 'single'" class="ng-select-radio" [class.ng-select-radio--selected]="isSelected(option)" aria-hidden="true"></span>
+          <img *ngIf="option.image" [src]="option.image" [alt]="option.label" class="ng-select-option__image" />
+          <span class="ng-select-option__label" [innerHTML]="getItemLabel(option)"></span>
+        </div>
+      </ng-container>
+    </cdk-virtual-scroll-viewport>
+  </ng-container>
+
+  <!-- Normal list (non-virtual) with group support -->
+  <ng-template #normalList>
+    <div class="ng-select-options-list">
+      <ng-container *ngFor="let group of groupedOptions">
+        <!-- Group header -->
+        <div *ngIf="group.group" class="ng-select-group-header" role="group" [attr.aria-label]="group.group">
+          {{ group.group }}
+        </div>
+        <!-- Options in group -->
+        <div
+          *ngFor="let option of group.options; trackBy: trackByOption"
+          class="ng-select-option"
+          [class.ng-select-option--selected]="isSelected(option)"
+          [class.ng-select-option--disabled]="option.disabled"
+          [class.ng-select-option--focused]="filteredOptions.indexOf(option) === focusedIndex"
+          [ngClass]="isSelected(option) ? [mergedConfig.theme.itemClass, mergedConfig.theme.selectedItemClass] : [mergedConfig.theme.itemClass]"
+          role="option"
+          [attr.aria-selected]="isSelected(option)"
+          [attr.aria-disabled]="option.disabled || false"
+          [attr.title]="option.tooltip || ''"
+          (click)="selectOption(option, $event)"
+        >
+          <span *ngIf="mergedConfig.mode === 'multi'" class="ng-select-checkbox" [class.ng-select-checkbox--checked]="isSelected(option)" aria-hidden="true">
+            <svg *ngIf="isSelected(option)" width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span *ngIf="mergedConfig.mode === 'single'" class="ng-select-radio" [class.ng-select-radio--selected]="isSelected(option)" aria-hidden="true"></span>
+          <img *ngIf="option.image" [src]="option.image" [alt]="option.label" class="ng-select-option__image" />
+          <span class="ng-select-option__label" [innerHTML]="getItemLabel(option)"></span>
+        </div>
+      </ng-container>
+
+      <!-- No results -->
+      <div
+        *ngIf="filteredOptions.length === 0 && !mergedConfig.loading"
+        class="ng-select-no-results"
+        role="status"
+      >
+        {{ mergedConfig.noResultsText }}
+      </div>
+    </div>
+  </ng-template>
+</div>

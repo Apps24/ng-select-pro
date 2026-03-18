@@ -1,0 +1,35 @@
+{
+  "name": "@apps24/ng-select-pro",
+  "version": "0.1.0",
+  "description": "A production-ready Angular multiselect dropdown component with search, virtual scroll, keyboard navigation, and full theming support.",
+  "keywords": [
+    "angular",
+    "multiselect",
+    "dropdown",
+    "select",
+    "ng-select",
+    "ng-select-pro",
+    "angular-component",
+    "select-all",
+    "search",
+    "virtual-scroll",
+    "accessible"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/ng-select-pro.git"
+  },
+  "license": "MIT",
+  "author": "Apurv Patole",
+  "access": "public",
+  "peerDependencies": {
+    "@angular/animations": ">=8.0.0",
+    "@angular/cdk": ">=8.0.0",
+    "@angular/common": ">=8.0.0",
+    "@angular/core": ">=8.0.0",
+    "@angular/forms": ">=8.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.6.0"
+  }
+}
