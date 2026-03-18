@@ -228,11 +228,11 @@ Full variable list:
 
 ### Tailwind CSS
 
-See [docs/tailwind-integration.md](docs/tailwind-integration.md).
+See [Tailwind Integration Guide](https://github.com/apps24/ng-select-pro/blob/main/docs/tailwind-integration.md).
 
 ### Angular Material
 
-See [docs/material-integration.md](docs/material-integration.md).
+See [Angular Material Integration Guide](https://github.com/apps24/ng-select-pro/blob/main/docs/material-integration.md).
 
 Add `.ng-select-material` class to the host for a Material Design appearance.
 
